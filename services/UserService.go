@@ -25,12 +25,12 @@ func NewUserService() *UserService {
 func (us *UserService) Login(c *gin.Context, userLogin *models.UserLoginRequest) (string, *models.APIResponse) {
 	existingUser := us.userRepository.FindByUsername(userLogin.Username)
 	if existingUser.ID == 0 {
-		return "", &models.APIResponse{Status: 400, Message: "username or password invalid"}
+		return "", &models.APIResponse{Status: 400, Message: "username invalid"}
 	}
 
 	errHash := utils.CompareHashPassword(userLogin.Password, existingUser.Password)
 	if !errHash {
-		return "", &models.APIResponse{Status: 400, Message: "username or password invalid"}
+		return "", &models.APIResponse{Status: 400, Message: "password invalid"}
 	}
 	token, err := utils.GenerateJWTToken(*existingUser)
 	if err != nil {
